@@ -1,0 +1,41 @@
+<!-- Custom Wazuh detection rules (local). IDs 100000+ are reserved for user rules. -->
+<group name="local,authentication,">
+
+  <rule id="100001" level="10" frequency="6" timeframe="120">
+    <if_matched_sid>5710</if_matched_sid>
+    <same_source_ip />
+    <description>Possible SSH brute force: 6+ failed logins from same source in 2 min.</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+
+  <rule id="100002" level="12">
+    <if_sid>5715</if_sid>
+    <field name="srcip" negate="yes">^10\.10\.</field>
+    <description>Successful SSH login from outside the lab network.</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+  </rule>
+
+  <rule id="100010" level="8">
+    <decoded_as>windows_eventchannel</decoded_as>
+    <field name="win.system.eventID">^4720$</field>
+    <description>Windows: a new user account was created.</description>
+    <mitre>
+      <id>T1136</id>
+    </mitre>
+  </rule>
+
+  <rule id="100011" level="12">
+    <decoded_as>windows_eventchannel</decoded_as>
+    <field name="win.system.eventID">^4672$</field>
+    <field name="win.eventdata.subjectUserName" negate="yes">SYSTEM</field>
+    <description>Windows: special privileges assigned to a new logon (possible privilege use).</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+  </rule>
+
+</group>
